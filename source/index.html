@@ -112,14 +112,14 @@
           <label class="search"><span>⌕</span><input id="search-input" type="search" placeholder="搜索银行、卡片或权益"></label>
           <select id="status-filter" aria-label="按状态筛选"><option value="all">全部状态</option><option value="active">使用中</option><option value="inactive">已停用</option></select>
           <select id="bank-filter" aria-label="按银行筛选"><option value="all">全部银行</option></select>
-          <select id="sort-select" aria-label="排序"><option value="bank">按银行</option><option value="limit-desc">额度从高到低</option><option value="payment">按还款日</option></select>
+          <select id="sort-select" aria-label="排序"><option value="custom">自定义排序</option><option value="bank">按银行</option><option value="limit-desc">额度从高到低</option><option value="payment">按还款日</option></select>
           <button class="btn btn-secondary" id="export-btn">导出备份</button>
           <button class="btn btn-secondary" id="export-csv-btn">导出 CSV</button>
         </div>
         <div class="table-summary" id="table-summary"></div>
         <div class="table-wrap panel">
           <table>
-            <thead><tr><th>卡片</th><th>银行 / 持卡人</th><th>卡组织</th><th>固定额度</th><th>账单 / 还款日</th><th>年费状态</th><th>状态</th><th></th></tr></thead>
+            <thead><tr><th>卡片</th><th>银行 / 持卡人</th><th>卡组织</th><th>额度</th><th>账单 / 还款日</th><th>年费状态</th><th>状态</th><th></th></tr></thead>
             <tbody id="card-table-body"></tbody>
           </table>
           <div class="empty-state" id="table-empty" hidden><strong>没有匹配的卡片</strong><span>调整筛选条件，或添加一张新卡。</span></div>
@@ -133,7 +133,7 @@
         </div>
         <div class="calendar-layout">
           <article class="panel calendar-panel"><div class="week-row"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div><div class="calendar-grid" id="calendar-grid"></div></article>
-          <aside class="panel calendar-aside"><span class="panel-kicker">REMINDERS</span><h2>本月提醒</h2><div class="reminder-list" id="month-reminders"></div></aside>
+          <aside class="panel calendar-aside"><span class="panel-kicker">REMINDERS</span><h2>本月提醒</h2><div class="reminder-list" id="month-reminders"></div><div class="reminder-pagination" id="reminder-pagination"><button type="button" class="icon-btn" id="reminder-prev" aria-label="上一页">‹</button><span id="reminder-page">1 / 1</span><button type="button" class="icon-btn" id="reminder-next" aria-label="下一页">›</button></div></aside>
         </div>
       </section>
 
@@ -146,12 +146,8 @@
           <article class="panel guide-card"><b>01</b><h3>录入卡片</h3><p>只记录管理所需信息。不要填写完整卡号、有效期、CVV、密码或短信验证码。</p></article>
           <article class="panel guide-card"><b>02</b><h3>查看提醒</h3><p>系统按账单日和还款日生成每月日历，并突出未来 7 天内的事项。</p></article>
           <article class="panel guide-card"><b>03</b><h3>定期备份</h3><p>使用“导出备份”保存 JSON 文件。换电脑时可从该文件恢复数据。</p></article>
-          <article class="panel guide-card"><b>04</b><h3>安全上传代码</h3><p>GitHub 仓库只上传程序和匿名示例数据。真实备份文件已由忽略规则排除。</p></article>
+          <article class="panel guide-card"><b>04</b><h3>安全上传代码</h3><p>GitHub 仓库只上传程序文件。真实备份文件已由忽略规则排除。</p></article>
         </div>
-        <article class="panel data-actions">
-          <div><h2>本地数据管理</h2><p>重置会删除当前浏览器中的全部卡片，并恢复匿名示例数据。</p></div>
-          <button class="btn btn-danger" id="reset-btn">重置示例数据</button>
-        </article>
       </section>
     </main>
   </div>
@@ -160,21 +156,87 @@
     <form id="card-form" method="dialog">
       <div class="dialog-head"><div><span class="panel-kicker">CARD DETAILS</span><h2 id="dialog-title">添加信用卡</h2></div><button type="button" class="icon-btn" id="dialog-close" aria-label="关闭">×</button></div>
       <input type="hidden" id="card-id">
-      <div class="form-grid">
-        <label><span>卡片名称 *</span><input id="card-name" required maxlength="60" placeholder="例如：旅行白金卡"></label>
-        <label><span>银行渠道 *</span><input id="card-bank" required maxlength="30" placeholder="例如：招商银行"></label>
-        <label><span>持卡人</span><input id="card-holder" maxlength="20" placeholder="例如：本人"></label>
-        <label><span>卡组织</span><select id="card-network"><option>银联</option><option>Visa</option><option>Mastercard</option><option>American Express</option><option>JCB</option><option>其他</option></select></label>
-        <label><span>卡片等级</span><input id="card-tier" maxlength="30" placeholder="例如：白金"></label>
-        <label><span>固定额度（元）</span><input id="card-limit" type="number" min="0" step="100" value="0"></label>
-        <label><span>账单日</span><input id="card-bill-day" type="number" min="1" max="31" value="1"></label>
-        <label><span>还款日</span><input id="card-payment-day" type="number" min="1" max="31" value="20"></label>
-        <label><span>年费（元）</span><input id="card-fee" type="number" min="0" step="1" value="0"></label>
-        <label><span>已减免金额（元）</span><input id="card-fee-waived" type="number" min="0" step="1" value="0"></label>
-        <label><span>年费日期</span><input id="card-fee-date" type="date"></label>
-        <label><span>状态</span><select id="card-status"><option value="active">使用中</option><option value="inactive">已停用</option></select></label>
-        <label class="full"><span>特殊权益</span><input id="card-benefits" maxlength="240" placeholder="用中文逗号分隔，例如：机场贵宾厅，酒店权益，接送机"></label>
-        <label class="full"><span>备注</span><textarea id="card-notes" maxlength="300" rows="3" placeholder="请勿填写完整卡号、CVV、密码或验证码"></textarea></label>
+      <div class="form-sections">
+        <section class="form-section">
+          <div class="form-section-head"><span>01</span><div><h3>基本信息</h3><p>用于区分卡片和持卡人</p></div></div>
+          <div class="form-grid">
+            <label><span>卡片名称 *</span><input id="card-name" required maxlength="60" placeholder="例如：旅行白金卡"></label>
+            <label><span>银行渠道 *</span><input id="card-bank" required maxlength="30" placeholder="例如：招商银行"></label>
+            <label><span>持卡人</span><input id="card-holder" maxlength="20" placeholder="例如：本人或家人姓名"></label>
+            <div class="choice-field"><span class="field-label">卡片类型</span><div class="segmented-choice"><label><input type="radio" name="card-role" value="primary" checked><span>主卡</span></label><label><input type="radio" name="card-role" value="supplementary"><span>副卡</span></label></div></div>
+            <label><span>卡片等级</span><input id="card-tier" maxlength="30" placeholder="例如：白金"></label>
+            <div class="network-field">
+              <span class="field-label">卡组织（可多选）</span>
+              <details class="network-select" id="card-network-select">
+                <summary id="card-network-summary">银联</summary>
+                <div class="network-options">
+                  <label><input type="checkbox" name="card-network" value="银联"><span>银联</span></label>
+                  <label><input type="checkbox" name="card-network" value="Visa"><span>Visa</span></label>
+                  <label><input type="checkbox" name="card-network" value="Mastercard"><span>Mastercard</span></label>
+                  <label><input type="checkbox" name="card-network" value="American Express"><span>American Express</span></label>
+                  <label><input type="checkbox" name="card-network" value="JCB"><span>JCB</span></label>
+                  <label><input type="checkbox" name="card-network" value="其他"><span>其他</span></label>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section limit-section">
+          <div class="form-section-head"><span>02</span><div><h3>额度关系</h3><p id="limit-section-help">设置独立额度或共享额度组</p></div></div>
+          <div class="limit-mode-row" id="limit-mode-row">
+            <div class="segmented-choice wide"><label><input type="radio" name="limit-mode" value="individual" checked><span><b>独立额度</b><small>单独计入总授信</small></span></label><label><input type="radio" name="limit-mode" value="shared"><span><b>共享额度</b><small>同组只计算一次</small></span></label></div>
+          </div>
+          <div class="form-grid compact" id="individual-limit-panel">
+            <label class="full"><span>固定额度（元）</span><input id="card-limit" type="text" inputmode="numeric" pattern="[0-9]*" value="0" placeholder="请输入固定额度"></label>
+          </div>
+          <div id="primary-shared-panel" hidden>
+            <div class="form-grid compact">
+              <label class="full"><span>共享额度组</span><select id="card-credit-group"><option value="new">＋ 新建共享额度组</option></select></label>
+              <label><span>额度组名称 *</span><input id="card-group-name" maxlength="40" placeholder="例如：招商银行共享额度"></label>
+              <label><span>共享总额度（元）*</span><input id="card-shared-limit" type="text" inputmode="numeric" pattern="[0-9]*" value="0" placeholder="整组只计算一次"></label>
+            </div>
+            <div class="inline-hint">同一额度组内的所有主卡和副卡，共用这里填写的总额度。</div>
+          </div>
+          <div id="supplementary-panel" hidden>
+            <div class="form-grid compact">
+              <label class="full"><span>关联主卡 *</span><select id="card-primary-card"><option value="">请选择同银行主卡</option></select></label>
+            </div>
+            <div class="relation-preview" id="relation-preview"><span>关联后将自动继承主卡的额度关系</span></div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <div class="form-section-head"><span>03</span><div><h3>账单与费用</h3><p>记录日期、年费和使用状态</p></div></div>
+          <div class="form-grid three-col">
+            <label><span>账单日</span><input id="card-bill-day" type="number" min="1" max="31" value="1"></label>
+            <label><span>还款日</span><input id="card-payment-day" type="number" min="1" max="31" value="20"></label>
+            <label><span>状态</span><select id="card-status"><option value="active">使用中</option><option value="inactive">已停用</option></select></label>
+            <label><span>年费（元）</span><input id="card-fee" type="number" min="0" step="1" value="0"></label>
+            <label><span>年费日期</span><input id="card-fee-date" type="date"></label>
+            <div class="choice-field full"><span class="field-label">年费类型</span><div class="segmented-choice fee-type-choice"><label><input type="radio" name="fee-type" value="rigid" checked><span>刚性年费</span></label><label><input type="radio" name="fee-type" value="waivable"><span>可减免</span></label><label><input type="radio" name="fee-type" value="term_free"><span>期免</span></label><label><input type="radio" name="fee-type" value="lifetime_free"><span>终免</span></label></div></div>
+            <div class="term-free-panel full" id="term-free-panel" hidden>
+              <div class="form-grid compact">
+                <label class="full"><span>卡片有效期（MM/YY）*</span><input id="card-fee-expiry" type="text" inputmode="numeric" maxlength="5" pattern="(0[1-9]|1[0-2])/[0-9]{2}" placeholder="例如：12/29"></label>
+              </div>
+              <div class="inline-hint">期免表示在卡片有效期内免收年费。</div>
+            </div>
+            <div class="waiver-panel full" id="waiver-panel" hidden>
+              <div class="form-grid compact">
+                <label class="full"><span>减免方法／条件 *</span><input id="card-fee-method" maxlength="100" placeholder="例如：年刷 12 次免年费"></label>
+                <div class="choice-field full"><span class="field-label">当前减免状态</span><div class="segmented-choice"><label><input type="radio" name="fee-status" value="pending" checked><span>未完成</span></label><label><input type="radio" name="fee-status" value="completed"><span>已完成</span></label></div></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <div class="form-section-head"><span>04</span><div><h3>权益与备注</h3><p>补充常用权益和安全备注</p></div></div>
+          <div class="form-grid">
+            <label class="full"><span>特殊权益</span><input id="card-benefits" maxlength="240" placeholder="用中文逗号分隔，例如：机场贵宾厅，酒店权益，接送机"></label>
+            <label class="full"><span>备注</span><textarea id="card-notes" maxlength="300" rows="3" placeholder="请勿填写完整卡号、CVV、密码或验证码"></textarea></label>
+          </div>
+        </section>
       </div>
       <div class="dialog-actions"><button type="button" class="btn btn-danger ghost" id="delete-card-btn" hidden>删除卡片</button><span></span><button type="button" class="btn btn-secondary" id="cancel-card-btn">取消</button><button type="submit" class="btn btn-primary">保存卡片</button></div>
     </form>
