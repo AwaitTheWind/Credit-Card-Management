@@ -31,10 +31,7 @@ Windows 用户双击根目录中的 `start.bat`；也可以直接打开 `source/
 
 ## 发布到 GitHub Pages
 
-1. 将仓库上传到 GitHub。
-2. 在仓库 Settings → Pages 中选择 “Deploy from a branch”。
-3. 选择主分支和 `/source` 目录。
-4. 保存后即可通过 GitHub Pages 地址访问。
+应用源文件位于 `source/`。如果需要发布为 GitHub Pages 网站，可以使用 GitHub Actions 将该目录部署到 Pages；仓库上传完成后再启用即可。
 
 注意：GitHub Pages 只托管程序文件；卡片数据仍保存在每位访问者自己的浏览器中，不会随代码上传。
 
