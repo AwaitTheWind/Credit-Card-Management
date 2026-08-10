@@ -1,6 +1,6 @@
 # CardPilot 本地信用卡管理
 
-一个离线优先、无需注册的信用卡管理应用，用来替代飞书多维表格中的信用卡仪表盘。程序本身是纯静态网页，可在 Windows、macOS 和 Linux 的现代浏览器中运行，也适合直接托管到 GitHub Pages。
+一个离线优先、无需注册的信用卡管理应用。程序本身是纯静态网页，可在 Windows、macOS 和 Linux 的现代浏览器中运行，也适合直接托管到 GitHub Pages。
 
 ![CardPilot 仪表盘](outputs/cardpilot-dashboard.png)
 
