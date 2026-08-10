@@ -1,10 +1,14 @@
 # CardPilot 本地信用卡管理
 
-一个离线优先、无需注册的信用卡管理应用。程序本身是纯静态网页，可在 Windows、macOS 和 Linux 的现代浏览器中运行，也适合直接托管到 GitHub Pages。
+一款无需注册、数据只保存在本机的信用卡额度、年费与还款日管理工具。
+
+[![在线体验](https://img.shields.io/badge/在线体验-打开应用-3f6df6)](https://awaitthewind.github.io/Credit-Card-Management/)
+[![GitHub Release](https://img.shields.io/github/v/release/AwaitTheWind/Credit-Card-Management?display_name=tag)](https://github.com/AwaitTheWind/Credit-Card-Management/releases)
+[![Local First](https://img.shields.io/badge/data-local--first-20a47a)](#隐私说明)
 
 ![CardPilot 仪表盘](outputs/cardpilot-dashboard.png)
 
-![CardPilot 仪表盘](outputs/cardpilot-dashboard.png)
+**[立即在线体验](https://awaitthewind.github.io/Credit-Card-Management/)** · **[下载源码](https://github.com/AwaitTheWind/Credit-Card-Management/archive/refs/heads/main.zip)** · **[提交建议](https://github.com/AwaitTheWind/Credit-Card-Management/issues)**
 
 ## 功能
 
@@ -31,7 +35,9 @@ Windows 用户双击根目录中的 `start.bat`；也可以直接打开 `source/
 
 ## 发布到 GitHub Pages
 
-应用源文件位于 `source/`。如果需要发布为 GitHub Pages 网站，可以使用 GitHub Actions 将该目录部署到 Pages；仓库上传完成后再启用即可。
+应用源文件位于 `source/`，每次推送到 `main` 分支时会由 GitHub Actions 自动发布到：
+
+https://awaitthewind.github.io/Credit-Card-Management/
 
 注意：GitHub Pages 只托管程序文件；卡片数据仍保存在每位访问者自己的浏览器中，不会随代码上传。
 
