@@ -1,0 +1,29 @@
+# Sensitive local configuration
+.env
+.env.*
+!.env.example
+
+# Dependencies and virtual environments
+.venv/
+venv/
+node_modules/
+
+# Caches and temporary files
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+*.tmp
+*.log
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Sensitive or generated project data
+data/private/
+outputs/private/
+cardpilot-backup-*.json
+cardpilot-cards-*.csv
